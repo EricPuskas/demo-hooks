@@ -10,11 +10,12 @@ import TextField from "@material-ui/core/TextField";
 const useStyles = makeStyles(theme => ({
   formGroup: {
     display: "flex",
-    flexDirection: "column"
+    flexWrap: "wrap"
   },
   container: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    flexDirection: "column"
   },
   textField: {
     marginLeft: theme.spacing(1),
@@ -38,6 +39,7 @@ const defaultProps = {};
  */
 const PersonalInfo = props => {
   const classes = useStyles();
+  const { dispatch, state } = props;
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -46,14 +48,44 @@ const PersonalInfo = props => {
   });
 
   const handleChange = e => {
-    e.persist();
+    const name = e.target.name;
+    const value = e.target.value;
     setFormData(prevState => {
-      return { ...prevState, [e.target.name]: e.target.value };
+      return { ...prevState, [name]: value };
     });
-    console.log(formData);
   };
 
-  // return <Container className="PersonalInfo">PersonalInfo</Container>;
+  const syncWithProfileComp = () => {
+    const { firstName, lastName, address, posteCode } = formData;
+    switch (state.activeStep) {
+      case 0:
+        firstName.length >= 3 && dispatch({ type: "STEP_NEXT" });
+        break;
+      case 1:
+        firstName.length < 3 && dispatch({ type: "STEP_BACK" });
+        lastName.length >= 3 && dispatch({ type: "STEP_NEXT" });
+        break;
+      case 2:
+        lastName.length < 3 && dispatch({ type: "STEP_BACK" });
+        address.length >= 3 && dispatch({ type: "STEP_NEXT" });
+        break;
+      case 3:
+        address.length < 3 && dispatch({ type: "STEP_BACK" });
+        posteCode.length === 4 && dispatch({ type: "STEP_NEXT" });
+        break;
+      case 4:
+        posteCode.length < 4 && dispatch({ type: "STEP_BACK" });
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    syncWithProfileComp();
+    // eslint-disable-next-line
+  }, [formData]);
+
   return (
     <form className={classes.container} noValidate autoComplete="off">
       <div className={classes.formGroup}>
