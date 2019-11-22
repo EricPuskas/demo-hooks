@@ -1,8 +1,7 @@
 import React from "react";
 
-import Button from "@material-ui/core/Button";
-import PersonalInfo from "./components/PersonalInfo";
-import ProfileCompletion from "./components/ProfileCompletion";
+import RegisterPage from "./components/RegisterPage";
+import Typography from "@material-ui/core/Typography";
 
 /**
  *
@@ -13,18 +12,10 @@ import ProfileCompletion from "./components/ProfileCompletion";
 const App = () => {
   return (
     <div>
-      <h1>Demo - Hooks</h1>
-      <p> Featuring: </p>
-      <ul>
-        <li>useState</li>
-        <li>useEffect </li>
-        <li>useReducer</li>
-      </ul>
-      <Button variant="contained" color="primary">
-        Hello World
-      </Button>
-      <ProfileCompletion />
-      <PersonalInfo />
+      <Typography variant="h3" component="h1">
+        Demo - Hooks
+      </Typography>
+      <RegisterPage />
     </div>
   );
 };
