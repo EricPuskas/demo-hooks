@@ -35,11 +35,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /**
+ * Defines the prop types
+ */
+const propTypes = {
+  steps: PropTypes.arrayOf(PropTypes.string)
+};
+
+/**
+ * Defines the default props
+ */
+const defaultProps = {
+  steps: [
+    "Step 1 - First Name",
+    "Step 2 - Last Name",
+    "Step 3 - Address",
+    "Step 4 - Poste Code"
+  ]
+};
+
+/**
  * Displays the component
  */
 const ProfileCompletion = props => {
+  const classes = useStyles();
   const { activeStep, steps } = props;
-  const { root, resetContainer } = useStyles();
 
   return (
     <div className={root}>

@@ -1,13 +1,12 @@
 import React from "react";
 
-/** Component Imports */
+import { makeStyles } from "@material-ui/core/styles";
 import RegisterPage from "./components/RegisterPage";
 
 /** Material UI Imports */
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-/** Material UI Styling */
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -20,11 +19,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App = () => {
-  const { root, title } = useStyles();
-
+  const classes = useStyles();
   return (
-    <div className={root}>
-      <Typography className={title} variant="h3" component="h1">
+    <div className={classes.root}>
+      <Typography className={classes.title} variant="h3" component="h1">
         Demo - Hooks
       </Typography>
       <RegisterPage />

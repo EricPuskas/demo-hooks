@@ -37,18 +37,18 @@ const propTypes = {
   })
 };
 
-/** Defines the default props */
-const defaultProps = {
-  state: {
-    activeStep: 0
-  },
-  dispatch: () => console.log("DISPATCH"),
-  defaults: {
+/**
+ * Displays the component
+ */
+const PersonalInfo = props => {
+  const classes = useStyles();
+  const { dispatch, state } = props;
+  const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     address: "",
     posteCode: ""
-  }
+  });
 };
 
 /** Displays the component */
@@ -97,11 +97,41 @@ const PersonalInfo = props => {
   const handleChange = e => {
     const name = e.target.name;
     const value = e.target.value;
-
     setFormData(prevState => {
       return { ...prevState, [name]: value };
     });
   };
+
+  const syncWithProfileComp = () => {
+    const { firstName, lastName, address, posteCode } = formData;
+    switch (state.activeStep) {
+      case 0:
+        firstName.length >= 3 && dispatch({ type: "STEP_NEXT" });
+        break;
+      case 1:
+        firstName.length < 3 && dispatch({ type: "STEP_BACK" });
+        lastName.length >= 3 && dispatch({ type: "STEP_NEXT" });
+        break;
+      case 2:
+        lastName.length < 3 && dispatch({ type: "STEP_BACK" });
+        address.length >= 3 && dispatch({ type: "STEP_NEXT" });
+        break;
+      case 3:
+        address.length < 3 && dispatch({ type: "STEP_BACK" });
+        posteCode.length === 4 && dispatch({ type: "STEP_NEXT" });
+        break;
+      case 4:
+        posteCode.length < 4 && dispatch({ type: "STEP_BACK" });
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    syncWithProfileComp();
+    // eslint-disable-next-line
+  }, [formData]);
 
   return (
     <form className={container} noValidate autoComplete="off">
