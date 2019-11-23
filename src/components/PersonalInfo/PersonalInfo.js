@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-/**
- *  Material UI Imports
- */
+/** Material UI Imports */
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
+/** Generate styles  */
 const useStyles = makeStyles(theme => ({
   formGroup: {
     display: "flex",
-    flexDirection: "column"
+    flexWrap: "wrap"
   },
   container: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    flexDirection: "column"
   },
   textField: {
     marginLeft: theme.spacing(1),
@@ -23,43 +23,92 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-/**
- * Defines the prop types
- */
-const propTypes = {};
+/** Defines the prop types */
+const propTypes = {
+  state: PropTypes.shape({
+    activeStep: PropTypes.number
+  }),
+  dispatch: PropTypes.func,
+  defaults: PropTypes.shape({
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    address: PropTypes.string,
+    posteCode: PropTypes.string
+  })
+};
 
-/**
- * Defines the default props
- */
-const defaultProps = {};
-
-/**
- * Displays the component
- */
-const PersonalInfo = props => {
-  const classes = useStyles();
-  const [formData, setFormData] = useState({
+/** Defines the default props */
+const defaultProps = {
+  state: {
+    activeStep: 0
+  },
+  dispatch: () => console.log("DISPATCH"),
+  defaults: {
     firstName: "",
     lastName: "",
     address: "",
     posteCode: ""
-  });
+  }
+};
 
-  const handleChange = e => {
-    e.persist();
-    setFormData(prevState => {
-      return { ...prevState, [e.target.name]: e.target.value };
-    });
-    console.log(formData);
+/** Displays the component */
+const PersonalInfo = props => {
+  const { dispatch, state, defaults } = props;
+  const { activeStep } = state;
+  const [formData, setFormData] = useState(defaults);
+  const { container, formGroup, textField } = useStyles();
+
+  /** Syncronyze the Profile Component state */
+  const syncWithProfileComp = () => {
+    const { firstName, lastName, address, posteCode } = formData;
+    const STEP_NEXT = { type: "STEP_NEXT" };
+    const STEP_BACK = { type: "STEP_BACK" };
+
+    switch (activeStep) {
+      case 0:
+        firstName.length >= 3 && dispatch(STEP_NEXT);
+        break;
+      case 1:
+        firstName.length < 3 && dispatch(STEP_BACK);
+        lastName.length >= 3 && dispatch(STEP_NEXT);
+        break;
+      case 2:
+        lastName.length < 3 && dispatch(STEP_BACK);
+        address.length >= 3 && dispatch(STEP_NEXT);
+        break;
+      case 3:
+        address.length < 3 && dispatch(STEP_BACK);
+        posteCode.length === 4 && dispatch(STEP_NEXT);
+        break;
+      case 4:
+        posteCode.length < 4 && dispatch(STEP_BACK);
+        break;
+      default:
+        break;
+    }
   };
 
-  // return <Container className="PersonalInfo">PersonalInfo</Container>;
+  useEffect(() => {
+    syncWithProfileComp();
+    // eslint-disable-next-line
+  }, [formData]);
+
+  /** Handle input change, set the state */
+  const handleChange = e => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setFormData(prevState => {
+      return { ...prevState, [name]: value };
+    });
+  };
+
   return (
-    <form className={classes.container} noValidate autoComplete="off">
-      <div className={classes.formGroup}>
+    <form className={container} noValidate autoComplete="off">
+      <div className={formGroup}>
         <TextField
           id="standard-basic"
-          className={classes.textField}
+          className={textField}
           label="First Name"
           name="firstName"
           onChange={handleChange}
@@ -67,17 +116,17 @@ const PersonalInfo = props => {
         />
         <TextField
           id="standard-basic"
-          className={classes.textField}
+          className={textField}
           label="Last Name"
           name="lastName"
           onChange={handleChange}
           margin="normal"
         />
       </div>
-      <div className={classes.formGroup}>
+      <div className={formGroup}>
         <TextField
           id="standard-basic"
-          className={classes.textField}
+          className={textField}
           label="Address"
           name="address"
           onChange={handleChange}
@@ -85,7 +134,7 @@ const PersonalInfo = props => {
         />
         <TextField
           id="standard-basic"
-          className={classes.textField}
+          className={textField}
           label="Poste Code"
           name="posteCode"
           onChange={handleChange}
