@@ -14,20 +14,6 @@ import ProfileCompletion, {
 } from "../ProfileCompletion";
 import PersonalInfo from "../PersonalInfo";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    margin: `0 ${theme.spacing(10)}px`
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    display: "flex",
-    justifyContent: "center",
-    color: theme.palette.text.secondary
-  }
-}));
-
 /**
  * Defines the prop types
  */
